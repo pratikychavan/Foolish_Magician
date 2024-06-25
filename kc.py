@@ -142,6 +142,9 @@ class MasterMagician(Configurable):
             )
         )
     
+    def get_users_by_role(self, role):
+        self.admin.get_client_role_members(client_id=self.app_client_id, role_name=role)
+    
     def logout_user(self, username, disable=False):
         user_id = self.get_user_id(username=username)
         self.admin.user_logout(user_id=user_id)
