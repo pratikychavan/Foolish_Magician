@@ -107,17 +107,20 @@ class MasterMagician(Configurable):
         user_id = self.admin.create_user(payload=payload)
         return user_id
     
+    def get_user_id(self, username):
+        return self.admin.get_user_id(username=username)
+    
     def get_all_roles_of_user(self, username):
-        return self.admin.get_all_roles_of_user(user_id=self.admin.get_user_id(username=username))
+        return self.admin.get_all_roles_of_user(user_id=self.get_user_id(username=username))
     
     def get_token(self, username, password):
         return self.token_master.token(username=username, password=password)
     
     def assign_roles(self, username, roles):
-        user_id = self.admin.get_user_id(username=username)
+        user_id = self.get_user_id(username=username)
         role_reps = [role for role in self.admin.get_client_roles(client_id=self.app_client_id) if role['name'] in roles]
         self.admin.assign_client_role(
-            user_id=self.admin.get_user_id(username),
+            user_id=self.get_user_id(username),
             client_id=self.app_client_id,
             roles=self.admin.get_client_role(
                 client_id=self.app_client_id,
@@ -125,3 +128,31 @@ class MasterMagician(Configurable):
                 role_name=role_reps
             )
         )
+    
+    def remove_roles(self, username, roles):
+        user_id = self.get_user_id(username=username)
+        role_reps = [role for role in self.admin.get_client_roles(client_id=self.app_client_id) if role['name'] in roles]
+        self.admin.delete_client_roles_of_user(
+            user_id=user_id,
+            client_id=self.app_client_id,
+            roles=self.admin.get_client_role(
+                client_id=self.app_client_id,
+                user_id=user_id,
+                role_name=role_reps
+            )
+        )
+    
+    def logout_user(self, username, disable=False):
+        user_id = self.get_user_id(username=username)
+        self.admin.user_logout(user_id=user_id)
+        if disable:
+            self.admin.disable_user(user_id=user_id)
+        return True
+    
+    def enable_user(self, username):
+        self.admin.enable_user(user_id=self.get_user_id(username=username))
+        return True
+    
+    def set_password_for_user(self, username, password, temp=False):
+        self.admin.set_user_password(user_id=self.get_user_id(username=username), password=password, temporary=temp)
+        return True
