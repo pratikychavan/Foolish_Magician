@@ -13,4 +13,4 @@ class User(BaseModel):
 
 class Group(BaseModel):
     name = StringField(max_length=255)
-    permission = DictField()
+    permissions = DictField()

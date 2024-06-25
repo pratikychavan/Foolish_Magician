@@ -1,0 +1,13 @@
+{
+    "MasterMagician":{
+        "server_url": "http://localhost:8080/auth",
+        "client_id": "admin-cli",
+        "realm_name":"master",
+        "username": "admin",
+        "password": "admin",
+        "verify": true,
+
+        "app_realm":"Foolish_Magician",
+        "app_client_name": "api-server"
+    }
+}
